@@ -1,5 +1,5 @@
 ﻿using System.Linq.Expressions;
-using Contracts;
+using Contracts.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace Repository;
