@@ -2,6 +2,7 @@
 using Contracts;
 using Contracts.Repository;
 using LoggerService;
+using Microsoft.EntityFrameworkCore;
 using Repository;
 using Service;
 using Service.Contracts;
@@ -24,6 +25,11 @@ public static class ServiceExtensions
         {
 
         });
+
+    public static void ConfigureSqlContext(this IServiceCollection services,
+        IConfiguration configuration) =>
+        services.AddDbContext<RepositoryContext>(opts =>
+            opts.UseSqlServer(configuration.GetConnectionString("sqlConnection")));
 
     public static void ConfigureLoggerService(this IServiceCollection services) =>
         services.AddSingleton<ILoggerManager, LoggerManager>();
