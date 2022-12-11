@@ -8,7 +8,7 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
 {
     protected RepositoryContext context;
 
-    public RepositoryBase(RepositoryContext context)
+    protected RepositoryBase(RepositoryContext context)
     {
         this.context = context;
     }
