@@ -19,6 +19,6 @@ public class RepositoryManager : IRepositoryManager
 
     public void Save() => context.SaveChanges();
 
-    public ICompanyRepository CompanyRepository => companyRepository.Value;
-    public IEmployeeRepository EmployeeRepository => employeeRepository.Value;
+    public ICompanyRepository Company => companyRepository.Value;
+    public IEmployeeRepository Employee => employeeRepository.Value;
 }
