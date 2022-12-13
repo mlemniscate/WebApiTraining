@@ -19,4 +19,11 @@ public class CompaniesController : ControllerBase
                 service.CompanyService.GetAllCompanies(trackChanges: true);
         return Ok(companies);
     }
+
+    [HttpGet("{id:guid}")]
+    public IActionResult GetCompany(Guid id)
+    {
+        var company = service.CompanyService.GetCompany(id, trackChanges: false);
+        return Ok(company);
+    }
 }
