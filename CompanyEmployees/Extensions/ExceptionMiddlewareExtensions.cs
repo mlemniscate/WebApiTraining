@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Contracts;
 using Entities.ErrorModel;
 using Microsoft.AspNetCore.Diagnostics;
 
@@ -7,7 +8,7 @@ namespace CompanyEmployees.Extensions;
 public static class ExceptionMiddlewareExtensions
 {
     public static void ConfigureExceptionHandler(this WebApplication app,
-        ILogger logger)
+        ILoggerManager logger)
     {
         app.UseExceptionHandler(appError =>
         {

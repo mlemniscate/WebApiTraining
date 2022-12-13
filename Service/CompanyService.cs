@@ -12,7 +12,7 @@ public class CompanyService : ICompanyService
     private readonly ILoggerManager logger;
     private readonly IMapper mapper;
 
-    public CompanyService(IRepositoryManager repository, 
+    public CompanyService(IRepositoryManager repository,
         ILoggerManager logger,
         IMapper mapper)
     {
@@ -23,19 +23,12 @@ public class CompanyService : ICompanyService
 
     public IEnumerable<CompanyDto> GetAllCompanies(bool trackChanges)
     {
-        try
-        {
-            var companies = 
-                repository.Company.GetAllCompanies(trackChanges);
+        var companies =
+            repository.Company.GetAllCompanies(trackChanges);
 
-            var companiesDto = mapper.Map<IEnumerable<CompanyDto>>(companies);
+        var companiesDto = 
+            mapper.Map<IEnumerable<CompanyDto>>(companies);
 
-            return companiesDto;
-        }
-        catch (Exception ex)
-        {
-            logger.LogError($"Something went wrong in the {nameof(GetAllCompanies)} service method {ex}");
-            throw;
-        }
+        return companiesDto;
     }
 }

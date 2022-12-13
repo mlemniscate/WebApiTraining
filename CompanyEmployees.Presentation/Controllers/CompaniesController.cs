@@ -15,15 +15,8 @@ public class CompaniesController : ControllerBase
     [HttpGet]
     public IActionResult GetCompanies()
     {
-        try
-        {
-            var companies = 
+        var companies =
                 service.CompanyService.GetAllCompanies(trackChanges: true);
-            return Ok(companies);
-        }
-        catch
-        {
-            return StatusCode(500, "Internal server error");
-        }
+        return Ok(companies);
     }
 }
