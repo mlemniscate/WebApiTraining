@@ -1,4 +1,5 @@
-﻿using Contracts;
+﻿using AutoMapper;
+using Contracts;
 using Contracts.Repository;
 using Service.Contracts;
 using Shared.DataTransferObjects;
@@ -9,11 +10,15 @@ public class CompanyService : ICompanyService
 {
     private readonly IRepositoryManager repository;
     private readonly ILoggerManager logger;
+    private readonly IMapper mapper;
 
-    public CompanyService(IRepositoryManager repository, ILoggerManager logger)
+    public CompanyService(IRepositoryManager repository, 
+        ILoggerManager logger,
+        IMapper mapper)
     {
         this.repository = repository;
         this.logger = logger;
+        this.mapper = mapper;
     }
 
     public IEnumerable<CompanyDto> GetAllCompanies(bool trackChanges)
@@ -23,9 +28,7 @@ public class CompanyService : ICompanyService
             var companies = 
                 repository.Company.GetAllCompanies(trackChanges);
 
-            var companiesDto = companies.Select(c =>
-                new CompanyDto(c.Id, c.Name ?? "", string.Join(' ',
-                    c.Address, c.Country))).ToList();
+            var companiesDto = mapper.Map<IEnumerable<CompanyDto>>(companies);
 
             return companiesDto;
         }
