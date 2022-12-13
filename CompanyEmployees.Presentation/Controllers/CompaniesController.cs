@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Entities.Exceptions;
+using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 
 
@@ -24,6 +25,9 @@ public class CompaniesController : ControllerBase
     public IActionResult GetCompany(Guid id)
     {
         var company = service.CompanyService.GetCompany(id, trackChanges: false);
+
+        if (company is null) throw new CompanyNotFoundException(id);
+
         return Ok(company);
     }
 }
