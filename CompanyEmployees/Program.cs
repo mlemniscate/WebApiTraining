@@ -9,7 +9,12 @@ LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nl
 
 builder.Services.ConfigureRepositoryManager();
 builder.Services.ConfigureServiceManager();
-builder.Services.AddControllers()
+builder.Services.AddControllers(config =>
+    {
+        config.RespectBrowserAcceptHeader = true;
+        config.ReturnHttpNotAcceptable = true;
+    })
+    .AddXmlDataContractSerializerFormatters()
     .AddApplicationPart(
         typeof(CompanyEmployees.Presentation.AssemblyReference).Assembly);
 
