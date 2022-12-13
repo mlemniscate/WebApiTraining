@@ -15,8 +15,14 @@ public class EmployeeController : ControllerBase
     public IActionResult GetEmployees(Guid companyId)
     {
         var employees = service.EmployeeService.GetEmployees(companyId, trackChanges: false);
-
         return Ok(employees);
+    }
+
+    [HttpGet("{id:guid}")]
+    public IActionResult GetEmployee(Guid companyId, Guid id)
+    {
+        var employee = service.EmployeeService.GetEmployee(companyId, id, trackChanges: false);
+        return Ok(employee);
     }
 
 }

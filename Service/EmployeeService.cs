@@ -34,4 +34,18 @@ public class EmployeeService : IEmployeeService
 
         return employeesDto;
     }
+
+    public EmployeeDto GetEmployee(Guid companyId, Guid id, bool trackChanges)
+    {
+        var company = repository.Company.GetCompany(companyId, trackChanges);
+        if(company == null)
+            throw new CompanyNotFoundException(companyId);
+
+        var employeeDb = repository.Employee.GetEmployee(companyId, id, trackChanges);
+        if (employeeDb == null)
+            throw new EmployeeNotFoundException(id);
+
+        var employeeDto = mapper.Map<EmployeeDto>(employeeDb);
+        return employeeDto;
+    }
 }
