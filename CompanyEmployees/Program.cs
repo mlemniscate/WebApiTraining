@@ -15,6 +15,7 @@ builder.Services.AddControllers(config =>
         config.ReturnHttpNotAcceptable = true;
     })
     .AddXmlDataContractSerializerFormatters()
+    .AddCustomCSVFormatter()
     .AddApplicationPart(
         typeof(CompanyEmployees.Presentation.AssemblyReference).Assembly);
 

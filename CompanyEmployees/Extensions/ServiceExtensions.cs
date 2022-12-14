@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using CompanyEmployees.Formatter;
 using Contracts;
 using Contracts.Repository;
 using LoggerService;
@@ -39,4 +40,8 @@ public static class ServiceExtensions
 
     public static void ConfigureServiceManager(this IServiceCollection services) =>
         services.AddScoped<IServiceManager, ServiceManager>();
+
+    public static IMvcBuilder AddCustomCSVFormatter(this IMvcBuilder builder) =>
+        builder.AddMvcOptions(config =>
+            config.OutputFormatters.Add(new CsvOutputFormatter()));
 }
