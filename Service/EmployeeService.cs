@@ -2,6 +2,7 @@
 using Contracts;
 using Contracts.Repository;
 using Entities.Exceptions;
+using Entities.Models;
 using Service.Contracts;
 using Shared.DataTransferObjects;
 
@@ -47,5 +48,19 @@ public class EmployeeService : IEmployeeService
 
         var employeeDto = mapper.Map<EmployeeDto>(employeeDb);
         return employeeDto;
+    }
+
+    public EmployeeDto CreateEmployeeForCompany(Guid companyId, EmployeeCreateDto employee, bool trackChanges)
+    {
+        var company = repository.Company.GetCompany(companyId, trackChanges);
+        if(company is null) 
+            throw new CompanyNotFoundException(companyId);
+
+        var employeeEntity = mapper.Map<Employee>(employee);
+
+        repository.Employee.CreateEmployeeForCompany(companyId, employeeEntity);
+        repository.Save();
+
+        return mapper.Map<EmployeeDto>(employeeEntity);
     }
 }
