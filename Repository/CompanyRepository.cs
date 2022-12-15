@@ -17,4 +17,6 @@ public class CompanyRepository : RepositoryBase<Company>, ICompanyRepository
     public Company GetCompany(Guid id, bool trackChanges) =>
         FindByCondition(c => c.Id == id, trackChanges)
             .SingleOrDefault();
+
+    public void CreateCompany(Company company) => Create(company);
 }
