@@ -15,8 +15,10 @@ public class CompanyRepository : RepositoryBase<Company>, ICompanyRepository
     .ToList();
 
     public Company GetCompany(Guid id, bool trackChanges) =>
-        FindByCondition(c => c.Id == id, trackChanges)
-            .SingleOrDefault();
+        FindByCondition(c => c.Id == id, trackChanges).SingleOrDefault();
 
     public void CreateCompany(Company company) => Create(company);
+
+    public IEnumerable<Company> GetByIds(IEnumerable<Guid> ids, bool trackChanges) =>
+        FindByCondition(c => ids.Contains(c.Id), trackChanges).ToList();
 }

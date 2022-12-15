@@ -53,4 +53,16 @@ public class CompanyService : ICompanyService
         var companyToReturn = mapper.Map<CompanyDto>(companyEntity);
         return companyToReturn;
     }
+
+    public IEnumerable<CompanyDto> GetByIds(IEnumerable<Guid> ids, bool trackChanges)
+    {
+        if (ids is null)
+            throw new IdParametersBadRequestException();
+
+        var companyEntities = repository.Company.GetByIds(ids, trackChanges);
+        if (ids.Count() != companyEntities.Count())
+            throw new CollectionByIdsBadRequestException();
+
+        return mapper.Map<IEnumerable<CompanyDto>>(companyEntities);
+    }
 }
