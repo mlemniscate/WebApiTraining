@@ -2,7 +2,7 @@
 
 public class CollectionByIdsBadRequestException : BadRequestException
 {
-    protected CollectionByIdsBadRequestException() : base("Collection count mismatch comparing to ids.")
+    public CollectionByIdsBadRequestException() : base("Collection count mismatch comparing to ids.")
     {
     }
 }

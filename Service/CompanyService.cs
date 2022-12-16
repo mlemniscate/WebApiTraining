@@ -65,4 +65,23 @@ public class CompanyService : ICompanyService
 
         return mapper.Map<IEnumerable<CompanyDto>>(companyEntities);
     }
+
+    public (IEnumerable<CompanyDto> companies, string ids) CreateCompanyCollection(IEnumerable<CompanyCreateDto> companyCollection)
+    {
+        if (companyCollection is null)
+            throw new CompanyCollectionBadRequest();
+
+        var companyEntities = mapper.Map<IEnumerable<Company>>(companyCollection);
+
+        foreach (var company in companyEntities)
+        {
+            repository.Company.CreateCompany(company);
+        }
+
+        repository.Save();
+
+        var companyCollectionToReturn = mapper.Map<IEnumerable<CompanyDto>>(companyEntities);
+        var ids = string.Join(",", companyCollectionToReturn.Select(c => c.Id));
+        return (companies: companyCollectionToReturn, ids: ids);
+    }
 }
