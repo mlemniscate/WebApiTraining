@@ -10,7 +10,8 @@ public class ArrayModelBinder : IModelBinder
     {
         if (!bindingContext.ModelMetadata.IsEnumerableType)
         {
-            bindingContext.Result = ModelBindingResult.Failed(); return Task.CompletedTask;
+            bindingContext.Result = ModelBindingResult.Failed(); 
+            return Task.CompletedTask;
         }
         var providedValue = 
             bindingContext.ValueProvider.GetValue(bindingContext.ModelName).ToString();
