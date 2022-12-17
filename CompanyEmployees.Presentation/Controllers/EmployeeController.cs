@@ -4,7 +4,7 @@ using Shared.DataTransferObjects;
 
 namespace CompanyEmployees.Presentation.Controllers;
 
-[Route("api/companies/{companyId}/employees")]
+[Route("api/companies/{companyId:guid}/employees")]
 [ApiController]
 public class EmployeeController : ControllerBase
 {
@@ -36,7 +36,7 @@ public class EmployeeController : ControllerBase
         return CreatedAtRoute("GetCompanyEmployee", new { companyId, id = employeeDto.Id }, employeeDto);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
     public IActionResult DeleteEmployee(Guid companyId, Guid id)
     {
         service.EmployeeService.DeleteEmployeeForCompany(companyId, id, false);

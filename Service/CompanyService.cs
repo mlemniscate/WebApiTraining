@@ -84,4 +84,14 @@ public class CompanyService : ICompanyService
         var ids = string.Join(",", companyCollectionToReturn.Select(c => c.Id));
         return (companies: companyCollectionToReturn, ids: ids);
     }
+
+    public void DeleteCompany(Guid id, bool trackChanges)
+    {
+        var company = repository.Company.GetCompany(id, trackChanges);
+        if (company is null)
+            throw new CompanyNotFoundException(id);
+
+        repository.Company.DeleteCompany(company);
+        repository.Save();
+    }
 }
