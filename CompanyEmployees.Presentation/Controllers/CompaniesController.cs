@@ -1,4 +1,5 @@
-﻿using Entities.Exceptions;
+﻿using CompanyEmployees.Presentation.ModelBinders;
+using Entities.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DataTransferObjects;
@@ -30,7 +31,8 @@ public class CompaniesController : ControllerBase
     }
 
     [HttpGet("collection/({ids})", Name = "CompanyCollection")]
-    public IActionResult GetCompanyCollection(IEnumerable<Guid> ids)
+    public IActionResult GetCompanyCollection([ModelBinder(BinderType = 
+        typeof(ArrayModelBinder))] IEnumerable<Guid> ids)
     {
         var companies = service.CompanyService.GetByIds(ids, trackChanges: false);
 
