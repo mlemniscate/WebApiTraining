@@ -13,4 +13,5 @@ public interface ICompanyService
     (IEnumerable<CompanyDto> companies, string ids) CreateCompanyCollection(
         IEnumerable<CompanyCreateDto> companyCollection);
     void DeleteCompany(Guid id, bool trackChanges);
+    void UpdateCompany(Guid id, CompanyUpdateDto companyUpdateDto, bool trackChanges);
 }

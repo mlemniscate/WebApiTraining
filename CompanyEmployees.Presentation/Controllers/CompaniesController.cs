@@ -61,6 +61,16 @@ public class CompaniesController : ControllerBase
             result.companies);
     }
 
+    [HttpPut("{id:guid}")]
+    public IActionResult UpdateCompany(Guid id, CompanyUpdateDto company)
+    {
+        if (company is null)
+            return BadRequest("CompanyUpdateDto object is null.");
+
+        service.CompanyService.UpdateCompany(id, company, trackChanges: true);
+        return NoContent();
+    }
+
     [HttpDelete("{id:guid}")]
     public IActionResult DeleteCompany(Guid id)
     {
@@ -68,5 +78,7 @@ public class CompaniesController : ControllerBase
 
         return NoContent();
     }
+
+    
 
 }

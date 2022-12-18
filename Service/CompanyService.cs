@@ -94,4 +94,14 @@ public class CompanyService : ICompanyService
         repository.Company.DeleteCompany(company);
         repository.Save();
     }
+
+    public void UpdateCompany(Guid id, CompanyUpdateDto companyUpdateDto, bool trackChanges)
+    {
+        var company = repository.Company.GetCompany(id, trackChanges);
+        if (company is null)
+            throw new CompanyNotFoundException(id);
+
+        mapper.Map(companyUpdateDto, company);
+        repository.Save();
+    }
 }
