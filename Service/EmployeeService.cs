@@ -77,4 +77,19 @@ public class EmployeeService : IEmployeeService
         repository.Employee.DeleteEmployee(employeeForCompany);
         repository.Save();
     }
+
+    public void UpdateEmployeeForCompany(Guid companyId, Guid id,
+        EmployeeUpdateDto employeeUpdateDto , bool compTrackChanges, bool empTrackChanges)
+    {
+        var company = repository.Company.GetCompany(companyId, compTrackChanges);
+        if (company is null)
+            throw new CompanyNotFoundException(companyId);
+
+        var employeeEntity = repository.Employee.GetEmployee(companyId, id, empTrackChanges);
+        if(employeeEntity is null)
+            throw new EmployeeNotFoundException(id);
+
+        mapper.Map(employeeUpdateDto, employeeEntity);
+        repository.Save();
+    }
 }

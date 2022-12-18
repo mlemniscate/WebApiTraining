@@ -36,6 +36,19 @@ public class EmployeeController : ControllerBase
         return CreatedAtRoute("GetCompanyEmployee", new { companyId, id = employeeDto.Id }, employeeDto);
     }
 
+    [HttpPut("{id:guid}")]
+    public IActionResult UpdateEmployee(Guid companyId, Guid id,
+        [FromBody] EmployeeUpdateDto employee)
+    {
+        if (employee is null)
+            return BadRequest("EmployeeUpdateDto object is null");
+
+        service.EmployeeService.UpdateEmployeeForCompany(companyId, id, employee, 
+            compTrackChanges: false, empTrackChanges: true);
+
+        return NoContent();
+    }
+
     [HttpDelete("{id:guid}")]
     public IActionResult DeleteEmployee(Guid companyId, Guid id)
     {
