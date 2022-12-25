@@ -92,4 +92,26 @@ public class EmployeeService : IEmployeeService
         mapper.Map(employeeUpdateDto, employeeEntity);
         repository.Save();
     }
+
+    public (EmployeeUpdateDto employeeToPatch, Employee employeeEntity) GetEmployeeForPatch(Guid companyId, Guid id,
+        bool compTrackChanges, bool empTrackChanges)
+    {
+        var company = repository.Company.GetCompany(companyId, compTrackChanges);
+        if (company is null)
+            throw new CompanyNotFoundException(companyId);
+
+        var employeeEntity = repository.Employee.GetEmployee(companyId, id, empTrackChanges);
+        if(employeeEntity is null)
+            throw new EmployeeNotFoundException(id);
+
+        var employeeToPatch = mapper.Map<EmployeeUpdateDto>(employeeEntity);
+
+        return (employeeToPatch, employeeEntity);
+    }
+
+    public void SaveChangesForPatch(EmployeeUpdateDto employeeToPatch, Employee employeeEntity)
+    {
+        mapper.Map(employeeToPatch, employeeEntity);
+        repository.Save();
+    }
 }
