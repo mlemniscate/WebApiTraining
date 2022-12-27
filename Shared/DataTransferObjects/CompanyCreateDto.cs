@@ -2,5 +2,4 @@
 
 namespace Shared.DataTransferObjects;
 
-public record CompanyCreateDto(string Name, string Address, string Country, IEnumerable<EmployeeCreateDto> Employees) : 
-    CompanyManipulationDto(Name, Address, Country, Employees);
+public class CompanyCreateDto : CompanyManipulationDto {}

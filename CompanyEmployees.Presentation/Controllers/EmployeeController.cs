@@ -74,7 +74,13 @@ public class EmployeeController : ControllerBase
             compTrackChanges: false,
             empTrackChanges: true);
 
-        patchDoc.ApplyTo(result.employeeToPatch);
+        patchDoc.ApplyTo(result.employeeToPatch, ModelState);
+
+        TryValidateModel(result.employeeToPatch);
+
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+
         service.EmployeeService.SaveChangesForPatch(
             result.employeeToPatch, result.employeeEntity);
 

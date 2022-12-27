@@ -2,16 +2,16 @@
 
 namespace Shared.DataTransferObjects;
 
-public abstract record EmployeeManipulationDto
-(
+public abstract class EmployeeManipulationDto
+{
     [Required(ErrorMessage = "Employee name is a required field.")]
     [MaxLength(30, ErrorMessage = "Maximum length for the Name is 30 characters.")]
-    string? Name,
+    public string? Name { get; set; }
 
-    [Range(18, int.MaxValue,ErrorMessage = "Age is a required and it can't be lower then 18.")]
-    int Age,
+    [Range(18, int.MaxValue, ErrorMessage = "Age is a required and it can't be lower then 18.")]
+    public int Age { get; set; }
 
     [Required(ErrorMessage = "Position is a required field.")]
     [MaxLength(20, ErrorMessage = "Maximum length for the position is 20 characters.")]
-    string? Position
-);
+    public string? Position { get; set; }
+}   
