@@ -28,10 +28,13 @@ public class EmployeeController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult CreateEmployee(Guid companyId, [FromBody] EmployeeCreateDto employee)
+    public IActionResult CreateEmployee([FromBody] EmployeeCreateDto employee, Guid companyId)
     {
         if (employee is null)
             return BadRequest("EmployeeCreateDto object is null");
+
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
 
         var employeeDto = service.EmployeeService.CreateEmployeeForCompany(companyId, employee, trackChanges: false);
         return CreatedAtRoute("GetCompanyEmployee", new { companyId, id = employeeDto.Id }, employeeDto);
