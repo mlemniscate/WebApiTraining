@@ -45,6 +45,9 @@ public class CompaniesController : ControllerBase
         if (company is null)
             return BadRequest("CompanyCreateDto object is null");
 
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+
         var createdCompany = service.CompanyService.CreateCompany(company);
 
         return CreatedAtRoute("CompanyById", new { id = createdCompany.Id }, createdCompany);

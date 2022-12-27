@@ -8,7 +8,7 @@ public record EmployeeCreateDto
     [MaxLength(30, ErrorMessage = "Maximum length for the Name is 30 characters.")]
     string? Name,
 
-    [Required(ErrorMessage = "Age is a required field.")]
+    [Range(18, int.MaxValue,ErrorMessage = "Age is a required and it can't be lower then 18.")]
     int Age,
 
     [Required(ErrorMessage = "Position is a required field.")]
