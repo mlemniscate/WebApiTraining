@@ -23,10 +23,10 @@ public class CompanyService : ICompanyService
         this.mapper = mapper;
     }
 
-    public IEnumerable<CompanyDto> GetAllCompanies(bool trackChanges)
+    public async Task<IEnumerable<CompanyDto>> GetAllCompaniesAsync(bool trackChanges)
     {
         var companies =
-            repository.Company.GetAllCompanies(trackChanges);
+            await repository.Company.GetAllCompaniesAsync(trackChanges);
 
         var companiesDto = 
             mapper.Map<IEnumerable<CompanyDto>>(companies);
@@ -34,39 +34,39 @@ public class CompanyService : ICompanyService
         return companiesDto;
     }
 
-    public CompanyDto GetCompany(Guid id, bool trackChanges)
+    public async Task<CompanyDto> GetCompanyAsync(Guid id, bool trackChanges)
     {
-        var company = repository.Company.GetCompany(id, trackChanges);
+        var company = await repository.Company.GetCompanyAsync(id, trackChanges);
         if (company is null) throw new CompanyNotFoundException(id);
 
         var companyDto = mapper.Map<CompanyDto>(company);
         return companyDto;
     }
 
-    public CompanyDto CreateCompany(CompanyCreateDto company)
+    public async Task<CompanyDto> CreateCompanyAsync(CompanyCreateDto company)
     {
         var companyEntity = mapper.Map<Company>(company);
 
         repository.Company.CreateCompany(companyEntity);
-        repository.Save();
+        await repository.SaveAsync();
 
         var companyToReturn = mapper.Map<CompanyDto>(companyEntity);
         return companyToReturn;
     }
 
-    public IEnumerable<CompanyDto> GetByIds(IEnumerable<Guid> ids, bool trackChanges)
+    public async Task<IEnumerable<CompanyDto>> GetByIdsAsync(IEnumerable<Guid> ids, bool trackChanges)
     {
         if (ids is null)
             throw new IdParametersBadRequestException();
 
-        var companyEntities = repository.Company.GetByIds(ids, trackChanges);
+        var companyEntities = await repository.Company.GetByIdsAsync(ids, trackChanges);
         if (ids.Count() != companyEntities.Count())
             throw new CollectionByIdsBadRequestException();
 
         return mapper.Map<IEnumerable<CompanyDto>>(companyEntities);
     }
 
-    public (IEnumerable<CompanyDto> companies, string ids) CreateCompanyCollection(IEnumerable<CompanyCreateDto> companyCollection)
+    public async Task<(IEnumerable<CompanyDto> companies, string ids)> CreateCompanyCollectionAsync(IEnumerable<CompanyCreateDto> companyCollection)
     {
         if (companyCollection is null)
             throw new CompanyCollectionBadRequest();
@@ -78,30 +78,30 @@ public class CompanyService : ICompanyService
             repository.Company.CreateCompany(company);
         }
 
-        repository.Save();
+        await repository.SaveAsync();
 
         var companyCollectionToReturn = mapper.Map<IEnumerable<CompanyDto>>(companyEntities);
         var ids = string.Join(",", companyCollectionToReturn.Select(c => c.Id));
         return (companies: companyCollectionToReturn, ids: ids);
     }
 
-    public void DeleteCompany(Guid id, bool trackChanges)
+    public async Task DeleteCompanyAsync(Guid id, bool trackChanges)
     {
-        var company = repository.Company.GetCompany(id, trackChanges);
+        var company = await repository.Company.GetCompanyAsync(id, trackChanges);
         if (company is null)
             throw new CompanyNotFoundException(id);
 
         repository.Company.DeleteCompany(company);
-        repository.Save();
+        await repository.SaveAsync();
     }
 
-    public void UpdateCompany(Guid id, CompanyUpdateDto companyUpdateDto, bool trackChanges)
+    public async Task UpdateCompanyAsync(Guid id, CompanyUpdateDto companyUpdateDto, bool trackChanges)
     {
-        var company = repository.Company.GetCompany(id, trackChanges);
+        var company = await repository.Company.GetCompanyAsync(id, trackChanges);
         if (company is null)
             throw new CompanyNotFoundException(id);
 
         mapper.Map(companyUpdateDto, company);
-        repository.Save();
+        await repository.SaveAsync();
     }
 }

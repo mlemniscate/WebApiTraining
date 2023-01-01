@@ -17,7 +17,7 @@ public class RepositoryManager : IRepositoryManager
             CompanyRepository(context));
     }
 
-    public void Save() => context.SaveChanges();
+    public async Task SaveAsync() => await context.SaveChangesAsync();
 
     public ICompanyRepository Company => companyRepository.Value;
     public IEmployeeRepository Employee => employeeRepository.Value;
