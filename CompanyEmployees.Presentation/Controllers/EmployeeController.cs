@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
+﻿using CompanyEmployees.Presentation.ActionFilters;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DataTransferObjects;
@@ -28,28 +29,18 @@ public class EmployeeController : ControllerBase
     }
 
     [HttpPost]
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
     public async Task<IActionResult> CreateEmployee([FromBody] EmployeeCreateDto employee, Guid companyId)
     {
-        if (employee is null)
-            return BadRequest("EmployeeCreateDto object is null");
-
-        if (!ModelState.IsValid)
-            return UnprocessableEntity(ModelState);
-
         var employeeDto = await service.EmployeeService.CreateEmployeeForCompanyAsync(companyId, employee, trackChanges: false);
         return CreatedAtRoute("GetCompanyEmployee", new { companyId, id = employeeDto.Id }, employeeDto);
     }
 
     [HttpPut("{id:guid}")]
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
     public async Task<IActionResult> UpdateEmployee(Guid companyId, Guid id,
         [FromBody] EmployeeUpdateDto employee)
     {
-        if (employee is null)
-            return BadRequest("EmployeeUpdateDto object is null");
-
-        if (!ModelState.IsValid)
-            return UnprocessableEntity(ModelState);
-
         await service.EmployeeService.UpdateEmployeeForCompanyAsync(companyId, id, employee, 
             compTrackChanges: false, empTrackChanges: true);
 
@@ -64,12 +55,10 @@ public class EmployeeController : ControllerBase
     }
 
     [HttpPatch("{id:guid}")]
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
     public async Task<IActionResult> PartiallyUpdateEmployeeForCompany(Guid companyId, Guid id,
         [FromBody] JsonPatchDocument<EmployeeUpdateDto> patchDoc)
     {
-        if (patchDoc is null)
-            return BadRequest("object patchDoc send from client is null");
-
         var result = await service.EmployeeService.GetEmployeeForPatchAsync(companyId, id,
             compTrackChanges: false,
             empTrackChanges: true);

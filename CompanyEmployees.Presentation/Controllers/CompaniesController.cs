@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using CompanyEmployees.Presentation.ActionFilters;
 using CompanyEmployees.Presentation.ModelBinders;
 using Entities.Exceptions;
 using Microsoft.AspNetCore.Mvc;
@@ -41,14 +42,9 @@ public class CompaniesController : ControllerBase
     }
 
     [HttpPost]
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
     public async Task<IActionResult> CreateCompany([FromBody] CompanyCreateDto company)
     {
-        if (company is null)
-            return BadRequest("CompanyCreateDto object is null");
-
-        if (!ModelState.IsValid)
-            return UnprocessableEntity(ModelState);
-
         var createdCompany = await service.CompanyService.CreateCompanyAsync(company);
 
         return CreatedAtRoute("CompanyById", new { id = createdCompany.Id }, createdCompany);
@@ -66,11 +62,9 @@ public class CompaniesController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
     public async Task<IActionResult> UpdateCompany(Guid id, CompanyUpdateDto company)
     {
-        if (company is null)
-            return BadRequest("CompanyUpdateDto object is null.");
-
         await service.CompanyService.UpdateCompanyAsync(id, company, trackChanges: true);
         return NoContent();
     }
