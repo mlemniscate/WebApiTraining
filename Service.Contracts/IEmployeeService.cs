@@ -14,8 +14,8 @@ public interface IEmployeeService
     Task UpdateEmployeeForCompanyAsync(Guid companyId, Guid id,
         EmployeeUpdateDto employeeUpdateDto, bool compTrackChanges,bool empTrackChanges);
 
-    Task<(EmployeeUpdateDto employeeToPatch, Employee employeeEntity)> GetEmployeeForPatchAsync(
-        Guid companyId, Guid id, bool compTrackChanges, bool empTrackChanges);
+    Task<(EmployeeUpdateDto employeeToPatch, Employee employeeEntity)> GetEmployeeForPatchAsync(Guid companyId, Guid id,
+        bool compTrackChanges, bool empTrackChanges);
 
     Task SaveChangesForPatchAsync(EmployeeUpdateDto employeeToPatch, Employee employeeEntity);
 }

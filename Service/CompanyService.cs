@@ -36,8 +36,7 @@ public class CompanyService : ICompanyService
 
     public async Task<CompanyDto> GetCompanyAsync(Guid id, bool trackChanges)
     {
-        var company = await repository.Company.GetCompanyAsync(id, trackChanges);
-        if (company is null) throw new CompanyNotFoundException(id);
+        var company = await GetCompanyAndCheckIfItExists(id, trackChanges);
 
         var companyDto = mapper.Map<CompanyDto>(company);
         return companyDto;
@@ -87,9 +86,7 @@ public class CompanyService : ICompanyService
 
     public async Task DeleteCompanyAsync(Guid id, bool trackChanges)
     {
-        var company = await repository.Company.GetCompanyAsync(id, trackChanges);
-        if (company is null)
-            throw new CompanyNotFoundException(id);
+        var company = await GetCompanyAndCheckIfItExists(id, trackChanges);
 
         repository.Company.DeleteCompany(company);
         await repository.SaveAsync();
@@ -97,11 +94,16 @@ public class CompanyService : ICompanyService
 
     public async Task UpdateCompanyAsync(Guid id, CompanyUpdateDto companyUpdateDto, bool trackChanges)
     {
-        var company = await repository.Company.GetCompanyAsync(id, trackChanges);
-        if (company is null)
-            throw new CompanyNotFoundException(id);
+        var company = await GetCompanyAndCheckIfItExists(id, trackChanges);
 
         mapper.Map(companyUpdateDto, company);
         await repository.SaveAsync();
+    }
+
+    private async Task<Company?> GetCompanyAndCheckIfItExists(Guid id, bool trackChanges)
+    {
+        var company = await repository.Company.GetCompanyAsync(id, trackChanges);
+        if (company is null) throw new CompanyNotFoundException(id);
+        return company;
     }
 }
