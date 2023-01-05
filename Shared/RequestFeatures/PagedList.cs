@@ -13,6 +13,7 @@ public class PagedList<T> : List<T>
             PageSize = pageSize,
             TotalPages = (int)Math.Ceiling(count / (double)pageSize)
         };
+        AddRange(items);
     }
 
     public static PagedList<T> ToPagedList(IEnumerable<T> source, int pageNumber, int pageSize)
