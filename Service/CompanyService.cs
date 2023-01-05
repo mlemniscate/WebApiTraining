@@ -5,6 +5,7 @@ using Entities.Exceptions;
 using Entities.Models;
 using Service.Contracts;
 using Shared.DataTransferObjects;
+using Shared.RequestFeatures;
 
 namespace Service;
 
@@ -23,15 +24,16 @@ public class CompanyService : ICompanyService
         this.mapper = mapper;
     }
 
-    public async Task<IEnumerable<CompanyDto>> GetAllCompaniesAsync(bool trackChanges)
+    public async Task<(IEnumerable<CompanyDto>, MetaData)> GetAllCompaniesAsync(
+        CompanyParameters companyParameters, bool trackChanges)
     {
-        var companies =
-            await repository.Company.GetAllCompaniesAsync(trackChanges);
+        var companiesPagedList =
+            await repository.Company.GetAllCompaniesAsync(companyParameters, trackChanges);
 
         var companiesDto = 
-            mapper.Map<IEnumerable<CompanyDto>>(companies);
+            mapper.Map<IEnumerable<CompanyDto>>(companiesPagedList);
 
-        return companiesDto;
+        return (companies: companiesDto, matadata: companiesPagedList.MetaData);
     }
 
     public async Task<CompanyDto> GetCompanyAsync(Guid id, bool trackChanges)

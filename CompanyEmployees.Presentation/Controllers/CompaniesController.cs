@@ -1,10 +1,12 @@
 ﻿using System.Runtime.InteropServices;
+using System.Text.Json;
 using CompanyEmployees.Presentation.ActionFilters;
 using CompanyEmployees.Presentation.ModelBinders;
 using Entities.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DataTransferObjects;
+using Shared.RequestFeatures;
 
 
 namespace CompanyEmployees.Presentation.Controllers;
@@ -18,11 +20,15 @@ public class CompaniesController : ControllerBase
     public CompaniesController(IServiceManager service) => this.service = service;
 
     [HttpGet]
-    public async Task<IActionResult> GetCompanies()
+    public async Task<IActionResult> GetCompanies([FromQuery] CompanyParameters companyParameters)
     {
         var companies =
-                await service.CompanyService.GetAllCompaniesAsync(trackChanges: true);
-        return Ok(companies);
+                await service.CompanyService.GetAllCompaniesAsync(companyParameters, trackChanges: true);
+
+        Response.Headers.Add("X-Pagination",
+            JsonSerializer.Serialize(companies.metaData));
+
+        return Ok(companies.companies);
     }
 
     [HttpGet("{id:guid}", Name = "CompanyById")]
