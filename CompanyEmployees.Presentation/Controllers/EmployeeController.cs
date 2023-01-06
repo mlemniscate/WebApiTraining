@@ -1,4 +1,5 @@
 ﻿using CompanyEmployees.Presentation.ActionFilters;
+using Entities.Exceptions;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
@@ -20,6 +21,9 @@ public class EmployeeController : ControllerBase
     public async Task<IActionResult> GetEmployees(Guid companyId,
         [FromQuery] EmployeeParameters employeeParameters)
     {
+        if (!employeeParameters.ValidAgeRange)
+            throw new MaxAgeRangeBadRequestException();
+
         var pagedResult = await service.EmployeeService.GetEmployeesAsync(companyId,
             employeeParameters, trackChanges: false);
 
