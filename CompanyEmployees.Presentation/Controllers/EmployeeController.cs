@@ -1,9 +1,11 @@
 ﻿using CompanyEmployees.Presentation.ActionFilters;
+using Entities.Exceptions;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DataTransferObjects;
 using Shared.RequestFeatures;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace CompanyEmployees.Presentation.Controllers;
 
@@ -19,9 +21,16 @@ public class EmployeeController : ControllerBase
     public async Task<IActionResult> GetEmployees(Guid companyId,
         [FromQuery] EmployeeParameters employeeParameters)
     {
-        var employees = await service.EmployeeService.GetEmployeesAsync(companyId,
+        if (!employeeParameters.ValidAgeRange)
+            throw new MaxAgeRangeBadRequestException();
+
+        var pagedResult = await service.EmployeeService.GetEmployeesAsync(companyId,
             employeeParameters, trackChanges: false);
-        return Ok(employees);
+
+        Response.Headers.Add("X-Pagination",
+            JsonSerializer.Serialize(pagedResult.metaData));
+
+        return Ok(pagedResult.employees);
     }
 
     [HttpGet("{id:guid}", Name = "GetCompanyEmployee")]
