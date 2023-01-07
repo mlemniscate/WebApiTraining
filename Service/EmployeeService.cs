@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Dynamic;
+using AutoMapper;
 using Contracts;
 using Contracts.Repository;
 using Entities.Exceptions;
@@ -27,7 +28,7 @@ public class EmployeeService : IEmployeeService
         this.dataShaper = dataShaper;
     }
 
-    public async Task<(IEnumerable<EmployeeDto> employees, MetaData metaData)> GetEmployeesAsync(Guid companyId,
+    public async Task<(IEnumerable<ExpandoObject> employees, MetaData metaData)> GetEmployeesAsync(Guid companyId,
         EmployeeParameters employeeParameters, bool trackChanges)
     {
         await CheckIfCompanyExists(companyId, trackChanges);
@@ -36,7 +37,8 @@ public class EmployeeService : IEmployeeService
             employeeParameters, trackChanges);
 
         var employeesDto = mapper.Map<IEnumerable<EmployeeDto>>(employeesWithMetaData);
-        var shapedData = dataShaper.ShapeData(employeesDto, employeeParameters.Fields);
+        var shapedData = dataShaper
+            .ShapeData(employeesDto, employeeParameters.Fields);
 
         return (employees: shapedData, metaData: employeesWithMetaData.MetaData);
 
