@@ -16,14 +16,14 @@ public class DataShaper<T> : IDataShaper<T> where T : class
     public PropertyInfo[] Properties { get; set; }
 
 
-    public IEnumerable<Entity> ShapeData(IEnumerable<T> entities, string fieldString)
+    public IEnumerable<ShapedEntity> ShapeData(IEnumerable<T> entities, string fieldString)
     {
         var requiredProperties = GetRequiredProperties(fieldString);
 
         return FetchData(entities, requiredProperties);
     }
 
-    public Entity ShapeData(T entity, string fieldString)
+    public ShapedEntity ShapeData(T entity, string fieldString)
     {
         var requiredProperties = GetRequiredProperties(fieldString);
 
@@ -58,10 +58,10 @@ public class DataShaper<T> : IDataShaper<T> where T : class
         return requiredProperties;
     }
 
-    private IEnumerable<Entity> FetchData(IEnumerable<T> entities,
+    private IEnumerable<ShapedEntity> FetchData(IEnumerable<T> entities,
         IEnumerable<PropertyInfo> requiredProperties)
     {
-        var ShapedData = new List<Entity>();
+        var ShapedData = new List<ShapedEntity>();
 
         foreach (var entity in entities)
         {
@@ -72,15 +72,18 @@ public class DataShaper<T> : IDataShaper<T> where T : class
         return ShapedData;
     }
 
-    private Entity FetchDataForEntity(T entity, IEnumerable<PropertyInfo> requiredProperties)
+    private ShapedEntity FetchDataForEntity(T entity, IEnumerable<PropertyInfo> requiredProperties)
     {
-        var shapedObject = new Entity();
+        var shapedObject = new ShapedEntity();
 
         foreach (var property in requiredProperties)
         {
             var objectPropertyValue = property.GetValue(entity);
-            shapedObject.TryAdd(property.Name, objectPropertyValue);
+            shapedObject.Entity.TryAdd(property.Name, objectPropertyValue);
         }
+
+        var objectProperty = entity.GetType().GetProperty("Id");
+        shapedObject.Id = (Guid)objectProperty.GetValue(entity);
 
         return shapedObject;
     }
