@@ -10,6 +10,7 @@
     <Folder Include="Extensions\" />
     <Folder Include="ContextFactory\" />
     <Folder Include="Formatter\" />
+    <Folder Include="Utility\" />
   </ItemGroup>
 
   <ItemGroup>
