@@ -18,6 +18,7 @@ public class EmployeeController : ControllerBase
     public EmployeeController(IServiceManager service) => this.service = service;
 
     [HttpGet]
+    [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
     public async Task<IActionResult> GetEmployees(Guid companyId,
         [FromQuery] EmployeeParameters employeeParameters)
     {
