@@ -38,6 +38,7 @@ builder.Services.AddControllers(config =>
     .AddApplicationPart(
         typeof(CompanyEmployees.Presentation.AssemblyReference).Assembly);
 
+builder.Services.AddCustomMediaType();
 builder.Services.AddScoped<IDataShaper<EmployeeDto>, DataShaper<EmployeeDto>>();
 
 builder.Services.ConfigureCors();
