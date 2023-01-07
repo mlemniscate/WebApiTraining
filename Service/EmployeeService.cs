@@ -14,14 +14,17 @@ public class EmployeeService : IEmployeeService
     private readonly IRepositoryManager repository;
     private readonly ILoggerManager logger;
     private readonly IMapper mapper;
+    private readonly IDataShaper<EmployeeDto> dataShaper;
 
-    public EmployeeService(IRepositoryManager repository, 
+    public EmployeeService(IRepositoryManager repository,
         ILoggerManager logger,
-        IMapper mapper)
+        IMapper mapper, 
+        IDataShaper<EmployeeDto> dataShaper)
     {
         this.repository = repository;
         this.logger = logger;
         this.mapper = mapper;
+        this.dataShaper = dataShaper;
     }
 
     public async Task<IEnumerable<EmployeeDto>> GetEmployeesAsync(Guid companyId,
@@ -33,6 +36,8 @@ public class EmployeeService : IEmployeeService
             employeeParameters, trackChanges);
 
         var employeesDto = mapper.Map<IEnumerable<EmployeeDto>>(employeesFromDb);
+
+        var shapedData = dataShaper.ShapeData(employeesDto, employeeParameters.Fields);
 
         return employeesDto;
     }

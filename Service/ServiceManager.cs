@@ -2,6 +2,7 @@
 using Contracts;
 using Contracts.Repository;
 using Service.Contracts;
+using Shared.DataTransferObjects;
 
 namespace Service;
 
@@ -14,14 +15,15 @@ public class ServiceManager : IServiceManager
 
     public ServiceManager(ILoggerManager logger,
         IRepositoryManager repositoryManager,
-        IMapper mapper)
+        IMapper mapper,
+        IDataShaper<EmployeeDto> dataShaper)
     {
         this.repositoryManager = repositoryManager;
         this.mapper = mapper;
-        this.employeeService = new Lazy<IEmployeeService>(() => 
-            new EmployeeService(repositoryManager, logger, mapper));
         this.companyService = new Lazy<ICompanyService>(() => 
             new CompanyService(repositoryManager, logger, mapper));
+        this.employeeService = new Lazy<IEmployeeService>(() => 
+            new EmployeeService(repositoryManager, logger, mapper, dataShaper));
     }
 
     public ICompanyService CompanyService => companyService.Value;

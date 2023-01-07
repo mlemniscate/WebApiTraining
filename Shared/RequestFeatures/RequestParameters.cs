@@ -12,4 +12,6 @@ public abstract class RequestParameters
     {
         PageSize = pageSize > maxPageSize ? maxPageSize : pageSize;
     }
+
+    public string Fields { get; set; }
 }
