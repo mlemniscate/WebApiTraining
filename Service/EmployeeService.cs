@@ -28,7 +28,7 @@ public class EmployeeService : IEmployeeService
         this.dataShaper = dataShaper;
     }
 
-    public async Task<(IEnumerable<Entity> employees, MetaData metaData)> GetEmployeesAsync(Guid companyId,
+    public async Task<(IEnumerable<ShapedEntity> employees, MetaData metaData)> GetEmployeesAsync(Guid companyId,
         EmployeeParameters employeeParameters, bool trackChanges)
     {
         await CheckIfCompanyExists(companyId, trackChanges);
