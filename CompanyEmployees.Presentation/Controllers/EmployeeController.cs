@@ -71,7 +71,7 @@ public class EmployeeController : ControllerBase
 
     [HttpPatch("{id:guid}")]
     [ServiceFilter(typeof(ValidationFilterAttribute))]
-    public async Task<IActionResult> PartiallyUpdateEmployeeForCompany(Guid companyId, Guid id,
+    public async Task<IActionResult> PartiallyUpdateEmployee(Guid companyId, Guid id,
         [FromBody] JsonPatchDocument<EmployeeUpdateDto> patchDoc)
     {
         var result = await service.EmployeeService.GetEmployeeForPatchAsync(companyId, id,

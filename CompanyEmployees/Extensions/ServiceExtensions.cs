@@ -68,7 +68,7 @@ public static class ServiceExtensions
             if (xmlOutputFormatter != null)
             {
                 systemTextJsonOutputFormatter.SupportedMediaTypes
-                    .Add("application/vnd.lemniscate.hateoas+json");
+                    .Add("application/vnd.lemniscate.hateoas+xml");
             }
         });
     }

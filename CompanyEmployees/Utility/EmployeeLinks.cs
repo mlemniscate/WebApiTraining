@@ -66,16 +66,16 @@ public class EmployeeLinks : IEmployeeLinks
     {
         var links = new List<Link>
         {
-            new Link(linkGenerator.GetUriByAction(httpContext, "GetEmployeeForCompany",
+            new Link(linkGenerator.GetUriByAction(httpContext, "GetEmployee",
                 values: new { companyId, id, fields }), "self", "GET"),
             new Link(
-                linkGenerator.GetUriByAction(httpContext, "DeleteEmployeeForCompany", values: new { companyId, id }),
+                linkGenerator.GetUriByAction(httpContext, "DeleteEmployee", values: new { companyId, id }),
                 "delete_employee", "DELETE"),
             new Link(
-                linkGenerator.GetUriByAction(httpContext, "UpdateEmployeeForCompany", values: new { companyId, id }),
+                linkGenerator.GetUriByAction(httpContext, "UpdateEmployee", values: new { companyId, id }),
                 "update_employee", "PUT"),
             new Link(
-                linkGenerator.GetUriByAction(httpContext, "PartiallyUpdateEmployeeForCompany", values: new { companyId, id }),
+                linkGenerator.GetUriByAction(httpContext, "PartiallyUpdateEmployee", values: new { companyId, id }),
                 "partially_update_employee", "PATCH")
         };
 
@@ -86,7 +86,7 @@ public class EmployeeLinks : IEmployeeLinks
         LinkCollectionWrapper<Entity> employeesWrapper)
     {
         employeesWrapper.Links.Add(
-            new Link(linkGenerator.GetUriByAction(httpContext, "GetEmployeesForCompany", values: new { }),
+            new Link(linkGenerator.GetUriByAction(httpContext, "GetEmployees", values: new { }),
                 "self", "GET"));
         return employeesWrapper;
     }
