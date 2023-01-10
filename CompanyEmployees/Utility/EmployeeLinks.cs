@@ -1,6 +1,7 @@
 ﻿using Contracts;
 using Entities.LinkModels;
 using Entities.Models;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Net.Http.Headers;
 using Shared.DataTransferObjects;
 
@@ -21,11 +22,11 @@ public class EmployeeLinks : IEmployeeLinks
     public LinkResponse TryGenerateLinks(IEnumerable<EmployeeDto> employeesDto, string fields, Guid companyId, HttpContext httpContext)
     {
         var shapedEmployees = ShapeData(employeesDto, fields);
-        
-        if (ShouldGenerateLinks(httpContext)) 
+
+        if (ShouldGenerateLinks(httpContext))
             return ReturnLinkdedEmployees(employeesDto.ToList(), fields, companyId,
-                httpContext, shapedEmployees); 
-        
+                httpContext, shapedEmployees);
+
         return ReturnShapedEmployees(shapedEmployees);
     }
 
@@ -58,5 +59,35 @@ public class EmployeeLinks : IEmployeeLinks
         var linkedEmployees = CreateLinksForEmployees(httpContext, employeeCollection);
 
         return new LinkResponse { HasLinks = true, LinkedEntities = linkedEmployees };
+    }
+
+    private List<Link> CreateLinksForEmployee(HttpContext httpContext,
+        Guid companyId, Guid id, string fields)
+    {
+        var links = new List<Link>
+        {
+            new Link(linkGenerator.GetUriByAction(httpContext, "GetEmployeeForCompany",
+                values: new { companyId, id, fields }), "self", "GET"),
+            new Link(
+                linkGenerator.GetUriByAction(httpContext, "DeleteEmployeeForCompany", values: new { companyId, id }),
+                "delete_employee", "DELETE"),
+            new Link(
+                linkGenerator.GetUriByAction(httpContext, "UpdateEmployeeForCompany", values: new { companyId, id }),
+                "update_employee", "PUT"),
+            new Link(
+                linkGenerator.GetUriByAction(httpContext, "PartiallyUpdateEmployeeForCompany", values: new { companyId, id }),
+                "partially_update_employee", "PATCH")
+        };
+
+        return links;
+    }
+
+    private LinkCollectionWrapper<Entity> CreateLinksForEmployees(HttpContext httpContext,
+        LinkCollectionWrapper<Entity> employeesWrapper)
+    {
+        employeesWrapper.Links.Add(
+            new Link(linkGenerator.GetUriByAction(httpContext, "GetEmployeesForCompany", values: new { }),
+                "self", "GET"));
+        return employeesWrapper;
     }
 }
