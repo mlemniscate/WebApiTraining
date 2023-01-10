@@ -1,5 +1,6 @@
 ﻿using CompanyEmployees.Presentation.ActionFilters;
 using Entities.Exceptions;
+using Entities.LinkModels;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
@@ -22,16 +23,17 @@ public class EmployeeController : ControllerBase
     public async Task<IActionResult> GetEmployees(Guid companyId,
         [FromQuery] EmployeeParameters employeeParameters)
     {
-        if (!employeeParameters.ValidAgeRange)
-            throw new MaxAgeRangeBadRequestException();
+        var linkParams = new LinkParameters(employeeParameters, HttpContext);
 
-        var pagedResult = await service.EmployeeService.GetEmployeesAsync(companyId,
-            employeeParameters, trackChanges: false);
+        var result = await service.EmployeeService.GetEmployeesAsync(companyId,
+            linkParams, trackChanges: false);
 
         Response.Headers.Add("X-Pagination",
-            JsonSerializer.Serialize(pagedResult.metaData));
+            JsonSerializer.Serialize(result.metaData));
 
-        return Ok(pagedResult.employees);
+        return result.linkResponse.HasLinks
+            ? Ok(result.linkResponse.LinkedEntities)
+            : Ok(result.linkResponse.ShapedEntities);
     }
 
     [HttpGet("{id:guid}", Name = "GetCompanyEmployee")]

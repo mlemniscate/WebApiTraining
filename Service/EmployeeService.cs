@@ -3,6 +3,7 @@ using AutoMapper;
 using Contracts;
 using Contracts.Repository;
 using Entities.Exceptions;
+using Entities.LinkModels;
 using Entities.Models;
 using Service.Contracts;
 using Shared.DataTransferObjects;
@@ -15,32 +16,36 @@ public class EmployeeService : IEmployeeService
     private readonly IRepositoryManager repository;
     private readonly ILoggerManager logger;
     private readonly IMapper mapper;
-    private readonly IDataShaper<EmployeeDto> dataShaper;
+    private readonly IEmployeeLinks employeeLinks;
 
     public EmployeeService(IRepositoryManager repository,
         ILoggerManager logger,
         IMapper mapper, 
-        IDataShaper<EmployeeDto> dataShaper)
+        IEmployeeLinks employeeLinks)
     {
         this.repository = repository;
         this.logger = logger;
         this.mapper = mapper;
-        this.dataShaper = dataShaper;
+        this.employeeLinks = employeeLinks;
     }
 
-    public async Task<(IEnumerable<ShapedEntity> employees, MetaData metaData)> GetEmployeesAsync(Guid companyId,
-        EmployeeParameters employeeParameters, bool trackChanges)
+    public async Task<(LinkResponse linkResponse, MetaData metaData)> GetEmployeesAsync(Guid companyId,
+        LinkParameters linkParameters, bool trackChanges)
     {
+        if (!linkParameters.EmployeeParameters.ValidAgeRange)
+            throw new MaxAgeRangeBadRequestException();
+
         await CheckIfCompanyExists(companyId, trackChanges);
         
         var employeesWithMetaData = await repository.Employee.GetEmployeesAsync(companyId,
-            employeeParameters, trackChanges);
+            linkParameters.EmployeeParameters, trackChanges);
 
         var employeesDto = mapper.Map<IEnumerable<EmployeeDto>>(employeesWithMetaData);
-        var shapedData = dataShaper
-            .ShapeData(employeesDto, employeeParameters.Fields);
+        var links = employeeLinks.TryGenerateLinks(employeesDto, linkParameters.EmployeeParameters.Fields,
+            companyId, linkParameters.Context
+        );
 
-        return (employees: shapedData, metaData: employeesWithMetaData.MetaData);
+        return (links: links, metaData: employeesWithMetaData.MetaData);
 
     }
 
