@@ -14,17 +14,20 @@ public class CompanyService : ICompanyService
     private readonly IRepositoryManager repository;
     private readonly ILoggerManager logger;
     private readonly IMapper mapper;
+    private readonly IDataShaper<CompanyDto> dataShaper;
 
     public CompanyService(IRepositoryManager repository,
         ILoggerManager logger,
-        IMapper mapper)
+        IMapper mapper,
+        IDataShaper<CompanyDto> dataShaper)
     {
         this.repository = repository;
         this.logger = logger;
         this.mapper = mapper;
+        this.dataShaper = dataShaper;
     }
 
-    public async Task<(IEnumerable<CompanyDto>, MetaData)> GetAllCompaniesAsync(
+    public async Task<(IEnumerable<Entity>, MetaData)> GetAllCompaniesAsync(
         CompanyParameters companyParameters, bool trackChanges)
     {
         var companiesPagedList =
@@ -33,7 +36,11 @@ public class CompanyService : ICompanyService
         var companiesDto = 
             mapper.Map<IEnumerable<CompanyDto>>(companiesPagedList);
 
-        return (companies: companiesDto, matadata: companiesPagedList.MetaData);
+        var shapedCompaniesWithId = dataShaper.ShapeData(companiesDto, companyParameters.Fields);
+
+        var shapedCompanies = shapedCompaniesWithId.Select(s => s.Entity);
+
+        return (companies: shapedCompanies, matadata: companiesPagedList.MetaData);
     }
 
     public async Task<CompanyDto> GetCompanyAsync(Guid id, bool trackChanges)

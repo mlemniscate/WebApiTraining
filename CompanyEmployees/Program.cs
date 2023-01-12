@@ -42,6 +42,7 @@ builder.Services.AddControllers(config =>
 builder.Services.AddCustomMediaType();
 builder.Services.AddScoped<ValidateMediaTypeAttribute>();
 builder.Services.AddScoped<IDataShaper<EmployeeDto>, DataShaper<EmployeeDto>>();
+builder.Services.AddScoped<IDataShaper<CompanyDto>, DataShaper<CompanyDto>>();
 builder.Services.AddScoped<IEmployeeLinks, EmployeeLinks>();
 
 builder.Services.ConfigureCors();
