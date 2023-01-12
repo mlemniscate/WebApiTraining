@@ -16,7 +16,7 @@ public class CompanyRepository : RepositoryBase<Company>, ICompanyRepository
     {
         var companies = await FindAll(trackChanges)
             .Search(companyParameters.SearchTerm)
-            .OrderBy(c => c.Name)
+            .Sort(companyParameters.OrderBy)
             .Skip((companyParameters.PageNumber - 1) * companyParameters.PageSize)
             .Take(companyParameters.PageSize)
             .ToListAsync();

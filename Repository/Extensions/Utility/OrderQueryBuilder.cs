@@ -9,7 +9,7 @@ public class OrderQueryBuilder
     public static string? CreateOrderQuery<T>(string orderByQueryString)
     {
         var orderParams = orderByQueryString.Trim().Split(',');
-        var propertyInfos = typeof(Employee)
+        var propertyInfos = typeof(T)
             .GetProperties(BindingFlags.Public | BindingFlags.Instance);
         var orderQueryBuilder = new StringBuilder();
         

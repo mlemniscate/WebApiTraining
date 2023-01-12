@@ -22,7 +22,7 @@ public static class EmployeeRepositoryExtensions
     }
 
     public static IQueryable<Employee> Sort(this IQueryable<Employee> employees,
-        string orderByQueryString)
+        string? orderByQueryString)
     {
         if(string.IsNullOrWhiteSpace(orderByQueryString)) 
             return employees.OrderBy(e => e.Name);
