@@ -3,6 +3,7 @@ using System.Text.Json;
 using CompanyEmployees.Presentation.ActionFilters;
 using CompanyEmployees.Presentation.ModelBinders;
 using Entities.Exceptions;
+using Entities.LinkModels;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DataTransferObjects;
@@ -20,15 +21,20 @@ public class CompaniesController : ControllerBase
     public CompaniesController(IServiceManager service) => this.service = service;
 
     [HttpGet]
+    [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
     public async Task<IActionResult> GetCompanies([FromQuery] CompanyParameters companyParameters)
     {
-        var companies =
-                await service.CompanyService.GetAllCompaniesAsync(companyParameters, trackChanges: true);
+        var linkParams = new LinkParameters<CompanyParameters>(companyParameters, HttpContext);
+
+        var result =
+                await service.CompanyService.GetAllCompaniesAsync(linkParams, trackChanges: true);
 
         Response.Headers.Add("X-Pagination",
-            JsonSerializer.Serialize(companies.metaData));
+            JsonSerializer.Serialize(result.metaData));
 
-        return Ok(companies.companies);
+        return result.links.HasLinks ?
+                Ok(result.links.LinkedEntities) :
+                Ok(result.links.ShapedEntities);
     }
 
     [HttpGet("{id:guid}", Name = "CompanyById")]

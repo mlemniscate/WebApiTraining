@@ -11,7 +11,6 @@ public class ServiceManager : IServiceManager
     private readonly IRepositoryManager repositoryManager;
     private readonly IMapper mapper;
     private readonly IEmployeeLinks employeeLinks;
-    private readonly IDataShaper<CompanyDto> companyDataShaper;
     private readonly Lazy<IEmployeeService> employeeService;
     private readonly Lazy<ICompanyService> companyService;
 
@@ -19,14 +18,13 @@ public class ServiceManager : IServiceManager
         IRepositoryManager repositoryManager,
         IMapper mapper,
         IEmployeeLinks employeeLinks,
-        IDataShaper<CompanyDto> companyDataShaper)
+        ICompanyLinks companyLinks)
     {
         this.repositoryManager = repositoryManager;
         this.mapper = mapper;
         this.employeeLinks = employeeLinks;
-        this.companyDataShaper = companyDataShaper;
         this.companyService = new Lazy<ICompanyService>(() => 
-            new CompanyService(repositoryManager, logger, mapper, companyDataShaper));
+            new CompanyService(repositoryManager, logger, mapper, companyLinks));
         this.employeeService = new Lazy<IEmployeeService>(() => 
             new EmployeeService(repositoryManager, logger, mapper, employeeLinks));
     }

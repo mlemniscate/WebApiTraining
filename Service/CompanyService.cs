@@ -2,6 +2,7 @@
 using Contracts;
 using Contracts.Repository;
 using Entities.Exceptions;
+using Entities.LinkModels;
 using Entities.Models;
 using Service.Contracts;
 using Shared.DataTransferObjects;
@@ -14,33 +15,32 @@ public class CompanyService : ICompanyService
     private readonly IRepositoryManager repository;
     private readonly ILoggerManager logger;
     private readonly IMapper mapper;
-    private readonly IDataShaper<CompanyDto> dataShaper;
+    private readonly ICompanyLinks companyLinks;
 
     public CompanyService(IRepositoryManager repository,
         ILoggerManager logger,
         IMapper mapper,
-        IDataShaper<CompanyDto> dataShaper)
+        ICompanyLinks companyLinks)
     {
         this.repository = repository;
         this.logger = logger;
         this.mapper = mapper;
-        this.dataShaper = dataShaper;
+        this.companyLinks = companyLinks;
     }
 
-    public async Task<(IEnumerable<Entity>, MetaData)> GetAllCompaniesAsync(
-        CompanyParameters companyParameters, bool trackChanges)
+    public async Task<(LinkResponse links, MetaData metaData)> GetAllCompaniesAsync(
+        LinkParameters<CompanyParameters> linkParameters, bool trackChanges)
     {
-        var companiesPagedList =
-            await repository.Company.GetAllCompaniesAsync(companyParameters, trackChanges);
+        var companiesWithMetaData =
+            await repository.Company.GetAllCompaniesAsync(linkParameters.RequestParameters, trackChanges);
 
         var companiesDto = 
-            mapper.Map<IEnumerable<CompanyDto>>(companiesPagedList);
+            mapper.Map<IEnumerable<CompanyDto>>(companiesWithMetaData);
 
-        var shapedCompaniesWithId = dataShaper.ShapeData(companiesDto, companyParameters.Fields);
-
-        var shapedCompanies = shapedCompaniesWithId.Select(s => s.Entity);
-
-        return (companies: shapedCompanies, matadata: companiesPagedList.MetaData);
+        var links = companyLinks
+            .TryGenerateLinks(companiesDto, linkParameters.RequestParameters.Fields, linkParameters.HttpContext);
+        
+        return (links: links, matadata: companiesWithMetaData.MetaData);
     }
 
     public async Task<CompanyDto> GetCompanyAsync(Guid id, bool trackChanges)
