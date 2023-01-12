@@ -20,7 +20,7 @@ public class CompaniesController : ControllerBase
 
     public CompaniesController(IServiceManager service) => this.service = service;
 
-    [HttpGet]
+    [HttpGet(Name = "GetCompanies")]
     [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
     public async Task<IActionResult> GetCompanies([FromQuery] CompanyParameters companyParameters)
     {
@@ -53,7 +53,7 @@ public class CompaniesController : ControllerBase
         return Ok(companies);
     }
 
-    [HttpPost]
+    [HttpPost(Name = "CreateCompany")]
     [ServiceFilter(typeof(ValidationFilterAttribute))]
     public async Task<IActionResult> CreateCompany([FromBody] CompanyCreateDto company)
     {
@@ -92,7 +92,6 @@ public class CompaniesController : ControllerBase
     public IActionResult GetCompaniesOptions()
     {
         Response.Headers.Add("Allow", "GET, OPTIONS, POST, PUT, DELETE");
-
         return Ok();
     }
 

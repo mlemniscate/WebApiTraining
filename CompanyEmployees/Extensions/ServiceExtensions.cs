@@ -59,6 +59,8 @@ public static class ServiceExtensions
             {
                 systemTextJsonOutputFormatter.SupportedMediaTypes
                     .Add("application/vnd.lemniscate.hateoas+json");
+                systemTextJsonOutputFormatter.SupportedMediaTypes
+                    .Add("application/vnd.lemniscate.apiroot+json");
             }
 
             var xmlOutputFormatter = config.OutputFormatters
@@ -69,6 +71,8 @@ public static class ServiceExtensions
             {
                 systemTextJsonOutputFormatter.SupportedMediaTypes
                     .Add("application/vnd.lemniscate.hateoas+xml");
+                systemTextJsonOutputFormatter.SupportedMediaTypes
+                    .Add("application/vnd.lemniscate.apiroot+xml");
             }
         });
     }
