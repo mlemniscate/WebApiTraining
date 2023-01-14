@@ -20,17 +20,13 @@ NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter() =>
 
 LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
 
-builder.Services.ConfigureRepositoryManager();
-builder.Services.ConfigureServiceManager();
-builder.Services.AddCustomMediaType();
-builder.Services.ConfigureVersioning();
-
 builder.Services.AddScoped<ValidationFilterAttribute>();
 builder.Services.AddControllers(config =>
     {
         config.RespectBrowserAcceptHeader = true;
         config.ReturnHttpNotAcceptable = true;
         config.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
+        config.CacheProfiles.Add("120SecondDuration", new CacheProfile {Duration = 120});
     })
     .ConfigureApiBehaviorOptions(options =>
     {
@@ -51,6 +47,11 @@ builder.Services.ConfigureCors();
 builder.Services.ConfigureIISIntegration();
 builder.Services.ConfigureLoggerService();
 builder.Services.ConfigureSqlContext(builder.Configuration);
+builder.Services.ConfigureRepositoryManager();
+builder.Services.ConfigureServiceManager();
+builder.Services.AddCustomMediaType();
+builder.Services.ConfigureVersioning();
+builder.Services.ConfigureResponseCaching();
 builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
@@ -69,6 +70,7 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 });
 
 app.UseCors("CorsPolicy");
+app.UseResponseCaching();
 
 app.UseAuthorization();
 
