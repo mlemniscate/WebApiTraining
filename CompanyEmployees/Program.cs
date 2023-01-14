@@ -22,6 +22,8 @@ LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nl
 
 builder.Services.ConfigureRepositoryManager();
 builder.Services.ConfigureServiceManager();
+builder.Services.AddCustomMediaType();
+builder.Services.ConfigureVersioning();
 
 builder.Services.AddScoped<ValidationFilterAttribute>();
 builder.Services.AddControllers(config =>
@@ -39,7 +41,6 @@ builder.Services.AddControllers(config =>
     .AddApplicationPart(
         typeof(CompanyEmployees.Presentation.AssemblyReference).Assembly);
 
-builder.Services.AddCustomMediaType();
 builder.Services.AddScoped<ValidateMediaTypeAttribute>();
 builder.Services.AddScoped<IDataShaper<EmployeeDto>, DataShaper<EmployeeDto>>();
 builder.Services.AddScoped<IDataShaper<CompanyDto>, DataShaper<CompanyDto>>();
