@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Text.Json;
+using CompanyEmployees.Presentation.ActionFilters;
+using Entities.LinkModels;
+using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
+using Shared.RequestFeatures;
 
 namespace CompanyEmployees.Presentation.Controllers;
 
@@ -16,10 +20,19 @@ public class CompaniesV2Controller : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetCompanies()
+    [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
+    public async Task<IActionResult> GetCompanies([FromQuery] CompanyParameters companyParameters)
     {
-        var companies = await service.CompanyService.GetAllCompaniesAsync(null,trackChanges: false);
+        var linkParams = new LinkParameters<CompanyParameters>(companyParameters, HttpContext);
 
-        return Ok(companies);
+        var result =
+            await service.CompanyService.GetAllCompaniesAsync(linkParams, trackChanges: true);
+
+        Response.Headers.Add("X-Pagination",
+            JsonSerializer.Serialize(result.metaData));
+
+        return result.links.HasLinks ?
+            Ok(result.links.LinkedEntities) :
+            Ok(result.links.ShapedEntities);
     }
 }
