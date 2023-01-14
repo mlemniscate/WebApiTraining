@@ -1,0 +1,25 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Service.Contracts;
+
+namespace CompanyEmployees.Presentation.Controllers;
+
+[ApiVersion("2.0")]
+[Route("api/companies")]
+[ApiController]
+public class CompaniesV2Controller : ControllerBase
+{
+    private readonly IServiceManager service;
+
+    public CompaniesV2Controller(IServiceManager service)
+    {
+        this.service = service;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetCompanies()
+    {
+        var companies = await service.CompanyService.GetAllCompaniesAsync(null,trackChanges: false);
+
+        return Ok(companies);
+    }
+}
