@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using Contracts;
 using Contracts.Repository;
+using Entities.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Service.Contracts;
 using Shared.DataTransferObjects;
 
@@ -13,12 +16,15 @@ public class ServiceManager : IServiceManager
     private readonly IEmployeeLinks employeeLinks;
     private readonly Lazy<IEmployeeService> employeeService;
     private readonly Lazy<ICompanyService> companyService;
+    private readonly Lazy<IAuthenticationService> authenticationService;
 
     public ServiceManager(ILoggerManager logger,
         IRepositoryManager repositoryManager,
         IMapper mapper,
         IEmployeeLinks employeeLinks,
-        ICompanyLinks companyLinks)
+        ICompanyLinks companyLinks,
+        UserManager<User> userManager,
+        IConfiguration configuration)
     {
         this.repositoryManager = repositoryManager;
         this.mapper = mapper;
@@ -27,8 +33,11 @@ public class ServiceManager : IServiceManager
             new CompanyService(repositoryManager, logger, mapper, companyLinks));
         this.employeeService = new Lazy<IEmployeeService>(() => 
             new EmployeeService(repositoryManager, logger, mapper, employeeLinks));
+        this.authenticationService = new Lazy<IAuthenticationService>(() => 
+            new AuthenticationService(logger, mapper, userManager, configuration));
     }
 
     public ICompanyService CompanyService => companyService.Value;
     public IEmployeeService EmployeeService => employeeService.Value;
+    public IAuthenticationService AuthenticationService => authenticationService.Value;
 }
