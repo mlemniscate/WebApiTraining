@@ -1,5 +1,6 @@
 ﻿using Entities.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Repository.Configuration;
 
@@ -19,6 +20,7 @@ public class RepositoryContext : IdentityDbContext<User>
 
         modelBuilder.ApplyConfiguration(new EmployeeConfiguration());
         modelBuilder.ApplyConfiguration(new CompanyConfiguration());
+        modelBuilder.ApplyConfiguration(new RoleConfiguration());
     }
 
     public DbSet<Company>? Companies { get; set; }
