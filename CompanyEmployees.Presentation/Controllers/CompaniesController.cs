@@ -5,6 +5,7 @@ using CompanyEmployees.Presentation.ModelBinders;
 using Entities.Exceptions;
 using Entities.LinkModels;
 using Marvin.Cache.Headers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DataTransferObjects;
@@ -24,6 +25,7 @@ public class CompaniesController : ControllerBase
     public CompaniesController(IServiceManager service) => this.service = service;
 
     [HttpGet(Name = "GetCompanies")]
+    [Authorize]
     [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
     public async Task<IActionResult> GetCompanies([FromQuery] CompanyParameters companyParameters)
     {
