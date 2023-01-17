@@ -11,6 +11,7 @@
     <Folder Include="ErrorModel\" />
     <Folder Include="Exceptions\" />
     <Folder Include="LinkModels\" />
+    <Folder Include="ConfigurationModels\" />
   </ItemGroup>
 
   <ItemGroup>
