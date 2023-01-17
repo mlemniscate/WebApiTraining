@@ -7,5 +7,6 @@ public interface IAuthenticationService
 {
     Task<IdentityResult> RegisterUser(UserForRegistrationDto userForRegistration);
     Task<bool> ValidateUser(UserForAuthenticationDto userForAuthentication);
-    Task<string> CreateToken();
+    Task<TokenDto> CreateToken(bool populateExp);
+    Task<TokenDto> RefreshToken(TokenDto tokenDto);
 }

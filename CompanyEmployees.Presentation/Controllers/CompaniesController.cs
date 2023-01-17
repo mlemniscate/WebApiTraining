@@ -25,7 +25,7 @@ public class CompaniesController : ControllerBase
     public CompaniesController(IServiceManager service) => this.service = service;
 
     [HttpGet(Name = "GetCompanies")]
-    [Authorize]
+    [Authorize(Roles = "Manager")]
     [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
     public async Task<IActionResult> GetCompanies([FromQuery] CompanyParameters companyParameters)
     {
