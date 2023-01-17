@@ -18,6 +18,7 @@ namespace CompanyEmployees.Presentation.Controllers;
 [Route("api/companies")]
 // [ResponseCache(CacheProfileName = "120SecondDuration")]
 [ApiController]
+[ApiExplorerSettings(GroupName = "v1")]
 public class CompaniesController : ControllerBase
 {
     private readonly IServiceManager service;
