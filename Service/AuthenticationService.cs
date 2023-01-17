@@ -9,6 +9,7 @@ using Entities.Exceptions;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Service.Contracts;
 using Shared.DataTransferObjects;
@@ -20,7 +21,7 @@ public sealed class AuthenticationService : IAuthenticationService
     private readonly ILoggerManager logger;
     private readonly IMapper mapper;
     private readonly UserManager<User> userManager;
-    private readonly IConfiguration configuration;
+    private readonly IOptions<JwtConfiguration> configuration;
     private readonly JwtConfiguration jwtConfiguration;
 
     private User? user;
@@ -28,14 +29,13 @@ public sealed class AuthenticationService : IAuthenticationService
     // You can use this for checking that roles exists in database or not with RoleExitsAsync method
     // private readonly RoleManager<IdentityRole> roleManager;
 
-    public AuthenticationService(ILoggerManager logger, IMapper mapper, UserManager<User> userManager, IConfiguration configuration)
+    public AuthenticationService(ILoggerManager logger, IMapper mapper, UserManager<User> userManager, IOptions<JwtConfiguration> configuration)
     {
         this.logger = logger;
         this.mapper = mapper;
         this.userManager = userManager;
         this.configuration = configuration;
-        jwtConfiguration = new JwtConfiguration();
-        this.configuration.Bind(jwtConfiguration.Section, jwtConfiguration);
+        jwtConfiguration = configuration.Value;
     }
 
     public async Task<IdentityResult> RegisterUser(UserForRegistrationDto userForRegistration)

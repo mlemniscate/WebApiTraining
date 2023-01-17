@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Contracts;
 using Contracts.Repository;
+using Entities.ConfigurationModels;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Service.Contracts;
 using Shared.DataTransferObjects;
 
@@ -24,7 +26,7 @@ public class ServiceManager : IServiceManager
         IEmployeeLinks employeeLinks,
         ICompanyLinks companyLinks,
         UserManager<User> userManager,
-        IConfiguration configuration)
+        IOptions<JwtConfiguration> configuration)
     {
         this.repositoryManager = repositoryManager;
         this.mapper = mapper;
